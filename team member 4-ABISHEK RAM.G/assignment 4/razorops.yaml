@@ -1,0 +1,18 @@
+version v2
+
+tasks
+  build
+    runner razorcipython3.9
+    steps
+    - checkout
+    - cachepull pip-deps-{{ checksum requirements.txt }}
+    - commands 
+      - python -c 'import site; print(site.getsitepackages())'
+      - pip install -r requirements.txt
+    - commands
+      - python test.py
+    - cachepush 
+        key pip-deps-{{ checksum requirements.txt }}
+        paths
+        - usrlocallibpython3.9site-packages
+    - reportsjunit test-reports.xml
